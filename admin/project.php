@@ -8,9 +8,13 @@ $rows = mysqli_fetch_all($query, MYSQLI_ASSOC);
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
 
+    $queryProject  = mysqli_query($conn, "SELECT * FROM project WHERE id = $id");
+    $rowProject = mysqli_fetch_assoc($queryProject);
+    unlink('../assets/uploads/' . $rowProject['foto']);
+
     $delete = mysqli_query($conn, "DELETE FROM project WHERE id = $id");
     if ($delete) {
-        header("Location: project.php?hapus=berhasil");
+        header("Location: project.php?delete=berhasil");
     }
 }
 
@@ -86,7 +90,7 @@ if (isset($_GET['delete'])) {
 
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Resume</h5>
+                            <h5 class="card-title">Data Project</h5>
                             <!-- <div class="table table-responsive"> -->
                             <?php
                             if (isset($_GET['kirim']) && $_GET['kirim'] == "sukses") {
@@ -116,7 +120,9 @@ if (isset($_GET['delete'])) {
 
                                         <tr>
                                             <td><?php echo $no++ ?></td>
-                                            <td></td>
+                                            <td>
+                                                <img width="100" src="../assets/uploads/<?php echo $row['foto'] ?>" alt="">
+                                            </td>
                                             <td><?php echo $row['nama'] ?></td>
                                             <td><?php echo $row['kategori'] ?></td>
                                             <td>
