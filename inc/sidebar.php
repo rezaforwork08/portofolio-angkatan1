@@ -195,6 +195,12 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link collapsed" href="project.php">
+                <i class="bi bi-person"></i>
+                <span>Project</span>
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link collapsed" href="contact.php">
                 <i class="bi bi-person"></i>
                 <span>Contact</span>
