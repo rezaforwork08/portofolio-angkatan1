@@ -2,7 +2,8 @@
 require_once "../koneksi.php";
 session_start();
 
-$query = mysqli_query($conn, "SELECT * FROM project");
+$query = mysqli_query($conn, "SELECT blog.*, categories.nama_kategori FROM blog LEFT JOIN categories 
+ON blog.id_kategori = categories.id");
 $rows = mysqli_fetch_all($query, MYSQLI_ASSOC);
 
 if (isset($_GET['delete'])) {
@@ -90,7 +91,7 @@ if (isset($_GET['delete'])) {
 
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Data Project</h5>
+                            <h5 class="card-title">Data Blog</h5>
                             <!-- <div class="table table-responsive"> -->
                             <?php
                             if (isset($_GET['kirim']) && $_GET['kirim'] == "sukses") {
@@ -101,14 +102,19 @@ if (isset($_GET['delete'])) {
                             <?php
                             }
                             ?>
-                            <a class="btn btn-primary mb-2" href="tambah-project.php">CREATE</a>
+                            <div align="right" class="mb-2">
+                                <a class="btn btn-primary" href="tambah-blog.php">CREATE</a>
+                            </div>
+
                             <table class="table table-bordered text-center" id="myTable">
                                 <thead>
                                     <tr>
                                         <th>No</th>
                                         <th>Foto</th>
-                                        <th>Nama</th>
                                         <th>Kategori</th>
+                                        <th>Judul</th>
+                                        <th>Penulis</th>
+                                        <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -123,8 +129,23 @@ if (isset($_GET['delete'])) {
                                             <td>
                                                 <img width="100" src="../assets/uploads/<?php echo $row['foto'] ?>" alt="">
                                             </td>
-                                            <td><?php echo $row['nama'] ?></td>
-                                            <td><?php echo $row['kategori'] ?></td>
+                                            <td><?php echo $row['nama_kategori'] ?></td>
+                                            <td><?php echo $row['judul'] ?></td>
+                                            <td><?php echo $row['penulis'] ?></td>
+                                            <td>
+                                                <?php
+                                                switch ($row['status']) {
+                                                    case '1':
+                                                        $label = "<span class='badge bg-primary'>Publish</span>";
+                                                        break;
+
+                                                    default:
+                                                        $label = "<span class='badge bg-warning'>Draft</span>";
+                                                        break;
+                                                }
+                                                echo $label;
+                                                ?>
+                                            </td>
                                             <td>
                                                 <a class="btn btn-success btn-sm" href="tambah-project.php?edit=<?php echo $row['id'] ?>">Edit</a>
                                                 <a class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin delete ?')" href="project.php?delete=<?php echo $row['id'] ?>">Delete</a>

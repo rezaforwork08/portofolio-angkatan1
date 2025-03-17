@@ -1,4 +1,5 @@
 <?php
+
 require_once "../koneksi.php";
 session_start();
 
@@ -8,8 +9,12 @@ if (empty($_SESSION['EMAIL'])) {
 }
 
 if (isset($_POST['simpan'])) {
-    $nama = $_POST['nama'];
-    $kategori = $_POST['kategori'];
+    $id_kategori = $_POST['id_kategori'];
+    $judul = $_POST['judul'];
+    $isi = $_POST['isi'];
+    $status = $_POST['status'];
+    $tags = $_POST['tags'];
+    $penulis = $_SESSION['FULLNAME'];
 
     $foto = $_FILES['foto'];
 
@@ -18,13 +23,13 @@ if (isset($_POST['simpan'])) {
         $filePath = "../assets/uploads/" . $fileName;
         move_uploaded_file($foto['tmp_name'], $filePath);
 
-        $insert = mysqli_query($conn, "INSERT INTO project (nama, kategori, foto) 
-        VALUES ('$nama','$kategori','$fileName')");
+        $insert = mysqli_query($conn, "INSERT INTO blog (id_kategori, judul, isi, status, tags, penulis, foto) 
+        VALUES ('$id_kategori','$judul','$isi','$status','$tags','$penulis','$fileName')");
 
         if ($insert) {
-            header("Location: project.php?kirim=sukses");
+            header("Location: blog.php?kirim=sukses");
         } else {
-            header("Location: tambah-project.php?tambah=erorr");
+            header("Location: tambah-blog.php?tambah=erorr");
         }
     }
 }
@@ -60,6 +65,10 @@ if (isset($_POST['edit'])) {
     }
 }
 
+// kategori
+$queryCat = mysqli_query($conn, "SELECT * FROM categories ORDER BY id DESC");
+$rowCat = mysqli_fetch_all($queryCat, MYSQLI_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -91,6 +100,7 @@ if (isset($_POST['edit'])) {
 
     <!-- Template Main CSS File -->
     <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.css" rel="stylesheet">
 
     <!-- =======================================================
   * Template Name: NiceAdmin
@@ -130,27 +140,58 @@ if (isset($_POST['edit'])) {
 
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title"><?php echo isset($_GET['edit']) ? 'EDIT' : 'ADD' ?> Project</h5>
+                            <h5 class="card-title"><?php echo isset($_GET['edit']) ? 'EDIT' : 'ADD' ?> Blog</h5>
                             <form action="" method="post" enctype="multipart/form-data">
                                 <div class="row mb-3">
                                     <div class="col-sm-2">
-                                        <label for="">Nama</label>
+                                        <label for="">Nama Kategori</label>
+                                    </div>
+                                    <div class="col-sm-10">
+                                        <!-- select, radio -->
+                                        <select name="id_kategori" id="" class="form-control">
+                                            <option value="">Pilih Kategori</option>
+                                            <?php foreach ($rowCat as $item): ?>
+                                                <option value="<?php echo $item['id'] ?>"><?php echo $item['nama_kategori'] ?></option>
+                                            <?php endforeach ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-2">
+                                        <label for="">Judul</label>
                                     </div>
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control"
-                                            name="nama"
-                                            value="<?php echo isset($_GET['edit']) ? $row['nama'] : '' ?>"
+                                            name="judul" value="<?php echo isset($_GET['edit']) ? $row['judul'] : '' ?>"
                                             required>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-sm-2">
-                                        <label for="">Kategori</label>
+                                        <label for="">Isi</label>
+                                    </div>
+                                    <div class="col-sm-10">
+                                        <textarea name="isi" id="" class="form-control summernote"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-2">
+                                        <label for="">Tags</label>
                                     </div>
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control"
-                                            name="kategori" value="<?php echo isset($_GET['edit']) ? $row['kategori'] : '' ?>"
-                                            required>
+                                            name="tags" value="<?php echo isset($_GET['edit']) ? $row['tags'] : '' ?>">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-2">
+                                        <label for="">Status</label>
+                                    </div>
+                                    <div class="col-sm-10">
+                                        <select name="status" id="" class="form-control">
+                                            <option value="1" selected>Publish</option>
+                                            <option value="0">Draft</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -215,6 +256,15 @@ if (isset($_POST['edit'])) {
 
     <!-- Template Main JS File -->
     <script src="../assets/js/main.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.js"></script>
+    <script>
+        $(".summernote").summernote({
+            height: 300,
+        });
+    </script>
+
 
 </body>
 

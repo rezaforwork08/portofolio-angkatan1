@@ -201,6 +201,12 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link collapsed" href="blog.php">
+                <i class="bi bi-newspaper"></i>
+                <span>Blog</span>
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link collapsed" href="contact.php">
                 <i class="bi bi-person"></i>
                 <span>Contact</span>
